@@ -20,6 +20,3 @@ book/src/puzzle_*/media/videos/*/partial_movie_files/
 
 # Mojo artifacts
 *.mojopkg
-
-# rules
-.cursor/

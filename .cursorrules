@@ -1,0 +1,13 @@
+# Import Modular's cursor rules for this project
+
+# General behavior rules (applies to all files)
+@.cursor/rules/general_behavior_rules.mdc
+
+# Mojo-specific coding standards (applies to .mojo files)
+@.cursor/rules/mojo.mdc
+
+# MAX development guidelines (applies to AI/ML development)
+@.cursor/rules/max_development.mdc
+
+# Git best practices (applies to version control)
+@.cursor/rules/git.mdc 
