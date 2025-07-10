@@ -25,8 +25,14 @@ fn naive_matmul[
 ):
     row = block_dim.y * block_idx.y + thread_idx.y
     col = block_dim.x * block_idx.x + thread_idx.x
-    # FILL ME IN (roughly 6 lines)
 
+    if row < size and col < size:
+        value: output.element_type = 0
+        # square matrices so size dimension is the same in all cases
+        @parameter
+        for k in range(size):
+            value += a[row, k] * b[k, col]
+        output[row, col] = value
 
 # ANCHOR_END: naive_matmul
 
@@ -43,8 +49,22 @@ fn single_block_matmul[
     col = block_dim.x * block_idx.x + thread_idx.x
     local_row = thread_idx.y
     local_col = thread_idx.x
-    # FILL ME IN (roughly 12 lines)
+    
+    a_shared = tb[dtype]().row_major[TPB, TPB]().shared().alloc()
+    b_shared = tb[dtype]().row_major[TPB, TPB]().shared().alloc()
 
+    if row < size and col < size:
+        a_shared[local_row, local_col] = a[row, col]
+        b_shared[local_row, local_col] = b[row, col]
+
+    barrier()
+
+    if row < size and col < size:
+        acc: output.element_type = 0
+        @parameter
+        for k in range(size):
+            acc += a_shared[local_row, k] * b_shared[k, local_col]
+        output[row, col] = acc
 
 # ANCHOR_END: single_block_matmul
 
